@@ -249,7 +249,7 @@ Function Revert-Changes {
     }
         
     #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.BackgroundTasks\ActiproBackground.reg"
+    $env:Path = "C:\Windows10Debloater\Windows.BackgroundTasks\BackgroundTasks.reg"
     Start-Process $env:Path
     $wshell = New-Object -ComObject wscript.shell;
     $wshell.AppActivate('UAC')
@@ -262,7 +262,7 @@ Function Revert-Changes {
     $wshell.SendKeys('~')
 
     #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.BackgroundTasks\PPIBackground.reg"
+    $env:Path = "C:\Windows10Debloater\Windows.File\WindowsFile.reg"
     Start-Process $env:Path
     $wshell = New-Object -ComObject wscript.shell;
     $wshell.AppActivate('UAC')
@@ -275,7 +275,7 @@ Function Revert-Changes {
     $wshell.SendKeys('~')
 
     #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.BackgroundTasks\XboxBackground.reg"
+    $env:Path = "C:\Windows10Debloater\Windows.Launch\WindowsLaunch.reg"
     Start-Process $env:Path
     $wshell = New-Object -ComObject wscript.shell;
     $wshell.AppActivate('UAC')
@@ -288,7 +288,7 @@ Function Revert-Changes {
     $wshell.SendKeys('~')
 
     #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.File\ActiproFile.reg"
+    $env:Path = "C:\Windows10Debloater\Windows.Protocol\Windows Protocol.reg"
     Start-Process $env:Path
     $wshell = New-Object -ComObject wscript.shell;
     $wshell.AppActivate('UAC')
@@ -301,98 +301,7 @@ Function Revert-Changes {
     $wshell.SendKeys('~')
 
     #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Launch\ActiproLaunch.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Launch\EclipseLaunch.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Launch\PPILaunch.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Launch\XboxLaunch.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Protocol\ActiproProtocol.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Protocol\PPIProtocol.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Protocol\XboxProtocol.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.ShareTarget\ActiproShare.reg"
+    $env:Path = "C:\Windows10Debloater\Windows.ShareTarget\WindowsShareTarget.reg"
     Start-Process $env:Path
     $wshell = New-Object -ComObject wscript.shell;
     $wshell.AppActivate('UAC')
