@@ -38,12 +38,12 @@ Function Backup-Keys {
     }
 
     If (!(
-            Test-Path 'C:\Windows10Debloater\Windows.BackgroundTasks'))
-    {New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.BackgroundTasks
-    Sleep 1
+            Test-Path 'C:\Windows10Debloater\Windows.BackgroundTasks')) {
+        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.BackgroundTasks
+        Sleep 1
     }
 
-    If(!(Test-Path 'C:\Windows10Debloater\Windows.File')) {
+    If (!(Test-Path 'C:\Windows10Debloater\Windows.File')) {
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.File
         Sleep 1
     }
