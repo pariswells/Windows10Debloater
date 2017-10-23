@@ -2,22 +2,23 @@
 #out a bloatware app that you would like to keep.
 
 #This function finds any AppX/AppXProvisioned package and uninstalls it, except for Freshpaint, Windows Calculator, Windows Store, and Windows Photos.
-#Credit for this function goes to reddit user /u/XDG-KEC-QZA-PBU
+#Also, to note - This does NOT remove essential system services/software/etc such as .NET framework installations, Cortana, Edge, etc.
 Function Start-Debloat {
+
     Get-AppxPackage -AllUsers |
-        where-object {$_.name -notlike "*Microsoft.FreshPaint*"} |
-        where-object {$_.name -notlike "*Microsoft.WindowsCalculator*"} |
-        where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
-        where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
-        Remove-AppxPackage
+    where-object {$_.name -notlike "*Microsoft.FreshPaint*"} |
+    where-object {$_.name -notlike "*Microsoft.WindowsCalculator*"} |
+    where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
+    where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
+    Remove-AppxPackage -ErrorAction SilentlyContinue -Verbose
 
 
-    Get-AppxProvisionedPackage -online |
-        where-object {$_.packagename -notlike "*Microsoft.FreshPaint*"} |
-        where-object {$_.packagename -notlike "*Microsoft.WindowsCalculator*"} |
-        where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
-        where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
-        Remove-AppxProvisionedPackage -online
+Get-AppxProvisionedPackage -online |
+    where-object {$_.packagename -notlike "*Microsoft.FreshPaint*"} |
+    where-object {$_.packagename -notlike "*Microsoft.WindowsCalculator*"} |
+    where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
+    where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
+    Remove-AppxProvisionedPackage -online -ErrorAction SilentlyContinue -Verbose    
 }
     
 #This function checks to see if several folders, such as C:\Windows10Debloater and then its subfolders exist, and if not it creates them. This will then allow the
@@ -26,24 +27,28 @@ Function Backup-Keys {
     #Creates a backup of the registry keys in 'Remove-Keys'
     New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
 
+
     If (!(Test-Path 'C:\Windows10Debloater')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater"
         New-Item -ItemType Directory -Path C:\ -Name Windows10Debloater
         Sleep 1 
     }
 
-    If (!(
-            Test-Path 'C:\Windows10Debloater\Windows.AppServiceKeys')) {
+    If (!(Test-Path 'C:\Windows10Debloater\Windows.AppServiceKeys')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.AppServiceKeys"
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.AppServiceKeys
         Sleep 1   
     }
 
     If (!(
             Test-Path 'C:\Windows10Debloater\Windows.BackgroundTasks')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.BackgroundTasks"
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.BackgroundTasks
         Sleep 1
     }
 
     If (!(Test-Path 'C:\Windows10Debloater\Windows.File')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.File"
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.File
         Sleep 1
     }
@@ -51,24 +56,28 @@ Function Backup-Keys {
 
     If (!(
             Test-Path 'C:\Windows10Debloater\Windows.Launch')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.Launch"
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.Launch
         Sleep 1
     }
 
     If (!(
             Test-Path 'C:\Windows10Debloater\Windows.PreInstalledConfigTask')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.PreinstalledConfigTask"
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.PreInstalledConfigTask
         Sleep 1
     }
 
     If (!(
             Test-Path 'C:\Windows10Debloater\Windows.Protocol')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.Protocol"
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.Protocol
         Sleep 1
     }
 
     If (!(
             Test-Path 'C:\Windows10Debloater\Windows.ShareTarget')) {
+        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.ShareTarget"
         New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.ShareTarget
         Sleep 1
     }
@@ -152,21 +161,21 @@ Function Protect-Privacy {
     #Disables Windows Feedback Experience
     If (Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo') {
         $Advertising = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo'
-        Set-ItemProperty $Advertising -Name Enabled -Value 0
+        Set-ItemProperty $Advertising -Name Enabled -Value 0 -Verbose
     }
     
     #Stops Cortana from being used as part of your Windows Search Function
     If ('HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search') {
         #Disables Cortana
         $Search = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
-        Set-ItemProperty $Search -Name AllowCortana -Value 0
+        Set-ItemProperty $Search -Name AllowCortana -Value 0 -Verbose
     }
     
     #Stops the Windows Feedback Experience from sending anonymous data
     If (!('HKCU:\Software\Microsoft\Siuf\Rules\PeriodInNanoSeconds')) { 
         $Period = 'HKCU:\Software\Microsoft\Siuf\Rules\PeriodInNanoSeconds'
         New-Item $Period
-        Set-ItemProperty -Name PeriodInNanoSeconds -Value 0
+        Set-ItemProperty -Name PeriodInNanoSeconds -Value 0 -Verbose
     }
            
     Write-Output "Adding Registry key to prevent bloatware apps from returning"
@@ -175,7 +184,7 @@ Function Protect-Privacy {
     If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content\")) {
         $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
         Mkdir $registryPath
-        New-ItemProperty $registryPath -Name DisableWindowsConsumerFeatures -Value 1
+        New-ItemProperty $registryPath -Name DisableWindowsConsumerFeatures -Value 1 -Verbose
     }
            
     Sleep 1
@@ -186,8 +195,8 @@ Function Protect-Privacy {
     If ('HKCR:\.pdf') {
         #This is the .pdf file association string
         $PDF = 'HKCR:\.pdf'
-        New-ItemProperty $PDF -Name NoOpenWith
-        New-ItemProperty $PDF -Name NoStaticDefaultVerb
+        New-ItemProperty $PDF -Name NoOpenWith -Verbose
+        New-ItemProperty $PDF -Name NoStaticDefaultVerb -Verbose
     }
            
     Sleep 1
@@ -195,14 +204,14 @@ Function Protect-Privacy {
     If ('HKCR:\.pdf\OpenWithProgids') {
         #This is the .pdf file association string
         $Progids = 'HKCR:\.pdf\OpenWithProgids'
-        New-ItemProperty $Progids -Name NoOpenWith
-        New-ItemProperty $Progids -Name NoStaticDefaultVerb
+        New-ItemProperty $Progids -Name NoOpenWith -Verbose
+        New-ItemProperty $Progids -Name NoStaticDefaultVerb -Verbose
     }
 
     #Tells Windows to disable your advertising information.
     If (Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo') {
         $Advertising = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo'
-        Set-ItemProperty $Advertising -Name Enabled -Value 1
+        Set-ItemProperty $Advertising -Name Enabled -Value 1 -Verbose
     }
 }
 Function Revert-Changes {        
@@ -216,7 +225,7 @@ Function Revert-Changes {
     If ('HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search') {
         #Disables Cortana
         $Search = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search'
-        Set-ItemProperty $Search -Name AllowCortana -Value 1
+        Set-ItemProperty $Search -Name AllowCortana -Value 1 -Verbose
     }
        
     Write-Output "Adding Registry key to prevent bloatware apps from returning"
@@ -225,7 +234,7 @@ Function Revert-Changes {
     If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content\")) {
         $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
         Mkdir $registryPath
-        New-ItemProperty $registryPath -Name DisableWindowsConsumerFeatures -Value 1
+        New-ItemProperty $registryPath -Name DisableWindowsConsumerFeatures -Value 1 -Verbose
     }
        
     Sleep 1
@@ -235,8 +244,8 @@ Function Revert-Changes {
     If ('HKCR:\.pdf') {
         #This is the .pdf file association string
         $PDF = 'HKCR:\.pdf'
-        New-ItemProperty $PDF -Name NoOpenWith
-        New-ItemProperty $PDF -Name NoStaticDefaultVerb
+        New-ItemProperty $PDF -Name NoOpenWith -Verbose
+        New-ItemProperty $PDF -Name NoStaticDefaultVerb -Verbose
     }
        
     Sleep 1
@@ -244,8 +253,8 @@ Function Revert-Changes {
     If ('HKCR:\.pdf\OpenWithProgids') {
         #This is the .pdf file association string
         $Progids = 'HKCR:\.pdf\OpenWithProgids'
-        New-ItemProperty $Progids -Name NoOpenWith
-        New-ItemProperty $Progids -Name NoStaticDefaultVerb
+        New-ItemProperty $Progids -Name NoOpenWith -Verbose
+        New-ItemProperty $Progids -Name NoStaticDefaultVerb -Verbose
     }
         
     #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
@@ -324,7 +333,7 @@ Switch ($ReadHost) {
         Write-Output "Enabling System Restore Functionality" ; $PublishSettings = $true
         Enable-ComputerRestore -Drive "C:\"
     } 
-    No {Write-Output "Skipping..."; $PublishSettings = $false} 
+    No {$PublishSettings = $false} 
 }
     
 #Switch statement containing Yes/No options
@@ -336,7 +345,7 @@ Switch ($ReadHost) {
         Write-Output "Creating a system restore checkpoint...." ; $PublishSettings = $true
         Checkpoint-Computer -Description "Windows 10 Debloat" -RestorePointType "APPLICATION_UNINSTALL"
     } 
-    No {Write-Output "Skipping..."; $PublishSettings = $false} 
+    No {$PublishSettings = $false} 
 }
     
 #Switch statement containing Yes/No options
@@ -376,20 +385,10 @@ Edge from being the default PDF viewer."
 $Readhost = Read-Host " ( Yes / No ) "
 Switch ($ReadHost) {
     Yes {
-        Write-Output "Changing some system settings"; $PublishSettings = $true
+        Write-Output "Disabling Cortana from being active within Windows Search, disabling Feedback to Microsoft, and stopping Edge from taking over as the PDF viewer."; $PublishSettings = $true
         Protect-Privacy
     }
-    No {Write-Output "Skipping..."; $PublishSettings = $false}
-}
-
-#Switch statement containing Yes/No options
-Write-Output "Do you want to view the license?"
-$Readhost = Read-Host " ( Yes / No ) "
-Switch ($ReadHost) {
-    Yes {
-        Start-Process C:\Windows10Debloater\license.txt ; $PublishSettings = $true
-    }
-    No {Write-Output "Skipping..."; $PublishSettings = $false}
+    No {$PublishSettings = $false}
 }
 
 Write-Output "Script has finished. Exiting."
