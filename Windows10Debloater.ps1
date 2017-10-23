@@ -13,102 +13,13 @@ Function Start-Debloat {
     Remove-AppxPackage -ErrorAction SilentlyContinue -Verbose
 
 
-Get-AppxProvisionedPackage -online |
+    Get-AppxProvisionedPackage -online |
     where-object {$_.packagename -notlike "*Microsoft.FreshPaint*"} |
     where-object {$_.packagename -notlike "*Microsoft.WindowsCalculator*"} |
     where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
     where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
     Remove-AppxProvisionedPackage -online -ErrorAction SilentlyContinue -Verbose    
 }
-    
-#This function checks to see if several folders, such as C:\Windows10Debloater and then its subfolders exist, and if not it creates them. This will then allow the
-#Function to place specific registry keys it is going to delete into a backup folder in case you decide to revert changes.
-Function Backup-Keys {
-    #Creates a backup of the registry keys in 'Remove-Keys'
-    New-PSDrive -Name HKCR -PSProvider Registry -Root HKEY_CLASSES_ROOT
-
-
-    If (!(Test-Path 'C:\Windows10Debloater')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater"
-        New-Item -ItemType Directory -Path C:\ -Name Windows10Debloater
-        Sleep 1 
-    }
-
-    If (!(Test-Path 'C:\Windows10Debloater\Windows.AppServiceKeys')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.AppServiceKeys"
-        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.AppServiceKeys
-        Sleep 1   
-    }
-
-    If (!(
-            Test-Path 'C:\Windows10Debloater\Windows.BackgroundTasks')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.BackgroundTasks"
-        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.BackgroundTasks
-        Sleep 1
-    }
-
-    If (!(Test-Path 'C:\Windows10Debloater\Windows.File')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.File"
-        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.File
-        Sleep 1
-    }
-
-
-    If (!(
-            Test-Path 'C:\Windows10Debloater\Windows.Launch')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.Launch"
-        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.Launch
-        Sleep 1
-    }
-
-    If (!(
-            Test-Path 'C:\Windows10Debloater\Windows.PreInstalledConfigTask')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.PreinstalledConfigTask"
-        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.PreInstalledConfigTask
-        Sleep 1
-    }
-
-    If (!(
-            Test-Path 'C:\Windows10Debloater\Windows.Protocol')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.Protocol"
-        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.Protocol
-        Sleep 1
-    }
-
-    If (!(
-            Test-Path 'C:\Windows10Debloater\Windows.ShareTarget')) {
-        Write-Output "Creating Folders - C:\Windows10Debloater\Windows.ShareTarget"
-        New-Item -ItemType Directory -Path C:\Windows10Debloater\ -Name Windows.ShareTarget
-        Sleep 1
-    }
-
-    Sleep 2
-
-    #These are the registry keys it will export
-    #Background Tasks
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.BackgroundTasks\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0" "C:\Windows10Debloater\Windows.BackgroundTasks\ActiproBackground.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.MicrosoftOfficeHub_17.7909.7600.0_x64__8wekyb3d8bbwe" "C:\Windows10Debloater\Windows.BackgroundTasks\MSOfficeHubBackground.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy" "C:\Windows10Debloater\Windows.BackgroundTasks\PPIBackground.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.BackgroundTasks\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy" "C:\Windows10Debloater\Windows.BackgroundTasks\XboxBackground.reg"
-    
-    #Windows File
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.File\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0" "C:\Windows10Debloater\Windows.File\ActiproFile.reg"
-    
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.Launch\PackageId\46928bounde.EclipseManager_2.2.4.51_neutral__a5h4egax66k6y" "C:\Windows10Debloater\Windows.Launch\EclipseLaunch.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.Launch\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0" "C:\Windows10Debloater\Windows.Launch\ActiproLaunch.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy" "C:\Windows10Debloater\Windows.Launch\PPILaunch.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.Launch\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy" "C:\Windows10Debloater\Windows.Launch\XboxLaunch.reg"
-        
-    #Windows Protocol Keys
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.Protocol\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0" "C:\Windows10Debloater\Windows.Protocol\ActiproProtocol.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.PPIProjection_10.0.15063.0_neutral_neutral_cw5n1h2txyewy" "C:\Windows10Debloater\Windows.Protocol\PPIProtocol.reg"
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.Protocol\PackageId\Microsoft.XboxGameCallableUI_1000.15063.0.0_neutral_neutral_cw5n1h2txyewy" "C:\Windows10Debloater\Windows.Protocol\XboxProtocol.reg"
-       
-    #Windows Share Target
-    REG EXPORT "HKEY_CLASSES_ROOT\Extensions\ContractId\Windows.ShareTarget\PackageId\ActiproSoftwareLLC.562882FEEB491_2.6.18.18_neutral__24pqs290vpjk0" "C:\Windows10Debloater\Windows.ShareTarget\ActiproShare.reg"
-}
-
-
 Function Remove-Keys {
 
     #These are the registry keys that it will delete.
@@ -219,8 +130,8 @@ Function Revert-Changes {
     #This function will revert the changes you made when running the Start-Debloat function.
 
     #This line reinstalls all of the bloatware that was removed
-    Get-AppxPackage -AllUsers | ForEach {Add-AppxPackage -ErrorAction SilentlyContinue -Verbose -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
-    
+        Get-AppxPackage -AllUsers | ForEach {Add-AppxPackage -Verbose -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"} -ErrorAction SilentlyContinue
+
     #Stops Cortana from being used as part of your Windows Search Function
     If ('HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search') {
         #Disables Cortana
@@ -256,72 +167,6 @@ Function Revert-Changes {
         New-ItemProperty $Progids -Name NoOpenWith -Verbose
         New-ItemProperty $Progids -Name NoStaticDefaultVerb -Verbose
     }
-        
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.BackgroundTasks\BackgroundTasks.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.File\WindowsFile.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Launch\WindowsLaunch.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.Protocol\Windows Protocol.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
-    #This .net code will automatically "click OK" for you when the UAC prompt appears twice when importing the registry keys that were backed up
-    $env:Path = "C:\Windows10Debloater\Windows.ShareTarget\WindowsShareTarget.reg"
-    Start-Process $env:Path
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-    Sleep 1
-    $wshell = New-Object -ComObject wscript.shell;
-    $wshell.AppActivate('UAC')
-    Sleep 1
-    $wshell.SendKeys('~')
-
 }
     
 #Switch statement containing Yes/No options
@@ -367,9 +212,8 @@ $Readhost = Read-Host " ( Debloat / Revert ) "
 Switch ($ReadHost) {
     #This will debloat Windows 10
     Debloat {
-        Write-Output "Starting Debloat. Uninstalling bloatware, backing up registry keys and then removing the registry keys."; $PublishSettings = $true
+        Write-Output "Starting Debloat. Uninstalling bloatware and removing the registry keys."; $PublishSettings = $true
         Start-Debloat
-        Backup-Keys
         Remove-Keys
     }
 
