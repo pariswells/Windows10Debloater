@@ -118,6 +118,12 @@ Function Protect-Privacy {
         New-ItemProperty $Progids -Name NoOpenWith -Verbose
         New-ItemProperty $Progids -Name NoStaticDefaultVerb -Verbose
     }
+
+    Write-Output "Disabling Mixed Reality Portal"
+    If ('HKCU:\Software\Microsoft\Windows\CurrentVersion\Holographic') {
+        $Holo = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Holographic'
+        Set-ItemProperty $Holo -Name FirstRunSucceeded -Value 0 -Verbose
+    }
 }
 Function Revert-Changes {        
 
