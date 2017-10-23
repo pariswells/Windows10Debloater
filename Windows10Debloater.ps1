@@ -219,7 +219,7 @@ Function Revert-Changes {
     #This function will revert the changes you made when running the Start-Debloat function.
 
     #This line reinstalls all of the bloatware that was removed
-    Get-AppxPackage -AllUsers | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+    Get-AppxPackage -AllUsers | ForEach {Add-AppxPackage -ErrorAction SilentlyContinue -Verbose -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
     
     #Stops Cortana from being used as part of your Windows Search Function
     If ('HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search') {
