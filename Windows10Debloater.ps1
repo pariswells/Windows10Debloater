@@ -6,19 +6,19 @@
 Function Start-Debloat {
 
     Get-AppxPackage -AllUsers |
-    where-object {$_.name -notlike "*Microsoft.FreshPaint*"} |
-    where-object {$_.name -notlike "*Microsoft.WindowsCalculator*"} |
-    where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
-    where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
-    Remove-AppxPackage -ErrorAction SilentlyContinue -Verbose
+        where-object {$_.name -notlike "*Microsoft.FreshPaint*"} |
+        where-object {$_.name -notlike "*Microsoft.WindowsCalculator*"} |
+        where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
+        where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
+        Remove-AppxPackage -ErrorAction SilentlyContinue -Verbose
 
 
     Get-AppxProvisionedPackage -online |
-    where-object {$_.packagename -notlike "*Microsoft.FreshPaint*"} |
-    where-object {$_.packagename -notlike "*Microsoft.WindowsCalculator*"} |
-    where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
-    where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
-    Remove-AppxProvisionedPackage -online -ErrorAction SilentlyContinue -Verbose    
+        where-object {$_.packagename -notlike "*Microsoft.FreshPaint*"} |
+        where-object {$_.packagename -notlike "*Microsoft.WindowsCalculator*"} |
+        where-object {$_.name -notlike "*Microsoft.WindowsStore*"} |
+        where-object {$_.name -notlike "*Microsoft.Windows.Photos*"} |
+        Remove-AppxProvisionedPackage -online -ErrorAction SilentlyContinue -Verbose    
 }
 Function Remove-Keys {
 
@@ -59,7 +59,7 @@ Function Remove-Keys {
     
     ForEach ($Key in $Keys) {
         Write-Output "Removing $Key from registry"
-        Remove-Item $Key -Recurse
+        Remove-Item $Key -Recurse -ErrorAction SilentlyContinue
     }
 }
     
@@ -92,10 +92,10 @@ Function Protect-Privacy {
     Write-Output "Adding Registry key to prevent bloatware apps from returning"
            
     #Prevents bloatware applications from returning
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content\")) {
+    If ('HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content\') {
         $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
         Mkdir $registryPath
-        New-ItemProperty $registryPath -Name DisableWindowsConsumerFeatures -Value 1 -Verbose
+        New-ItemProperty $registryPath -Name DisableWindowsConsumerFeatures -Value 0 -Verbose
     }
            
     Sleep 1
@@ -118,19 +118,13 @@ Function Protect-Privacy {
         New-ItemProperty $Progids -Name NoOpenWith -Verbose
         New-ItemProperty $Progids -Name NoStaticDefaultVerb -Verbose
     }
-
-    #Tells Windows to disable your advertising information.
-    If (Test-Path 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo') {
-        $Advertising = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo'
-        Set-ItemProperty $Advertising -Name Enabled -Value 1 -Verbose
-    }
 }
 Function Revert-Changes {        
 
     #This function will revert the changes you made when running the Start-Debloat function.
 
     #This line reinstalls all of the bloatware that was removed
-        Get-AppxPackage -AllUsers | ForEach {Add-AppxPackage -Verbose -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"} -ErrorAction SilentlyContinue
+    Get-AppxPackage -AllUsers | ForEach {Add-AppxPackage -Verbose -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"} -ErrorAction SilentlyContinue
 
     #Stops Cortana from being used as part of your Windows Search Function
     If ('HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search') {
@@ -142,7 +136,7 @@ Function Revert-Changes {
     Write-Output "Adding Registry key to prevent bloatware apps from returning"
        
     #Prevents bloatware applications from returning
-    If (!(Test-Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content\")) {
+    If ("HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content\") {
         $registryPath = "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
         Mkdir $registryPath
         New-ItemProperty $registryPath -Name DisableWindowsConsumerFeatures -Value 1 -Verbose
@@ -152,20 +146,32 @@ Function Revert-Changes {
        
     Write-Output "Stopping Edge from taking over as the default .PDF viewer"
        
-    If ('HKCR:\.pdf') {
+    If (!(Get-ItemProperty 'HKCR:\.pdf' -Name NoOpenWith)) {
         #This is the .pdf file association string
         $PDF = 'HKCR:\.pdf'
         New-ItemProperty $PDF -Name NoOpenWith -Verbose
         New-ItemProperty $PDF -Name NoStaticDefaultVerb -Verbose
     }
+    else {
+        Break
+    }
        
     Sleep 1
        
-    If ('HKCR:\.pdf\OpenWithProgids') {
+    If (!(Get-ItemProperty 'HKCR:\.pdf\OpenWithProgids' -Name NoOpenWith)) {
         #This is the .pdf file association string
         $Progids = 'HKCR:\.pdf\OpenWithProgids'
         New-ItemProperty $Progids -Name NoOpenWith -Verbose
         New-ItemProperty $Progids -Name NoStaticDefaultVerb -Verbose
+    }
+    else {
+        Break
+    }
+
+    #Tells Windows to enable your advertising information.
+    If ('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo') {
+        $Advertising = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AdvertisingInfo'
+        Set-ItemProperty $Advertising -Name Enabled -Value 1 -Verbose
     }
 }
     
@@ -216,7 +222,6 @@ Switch ($ReadHost) {
         Start-Debloat
         Remove-Keys
     }
-
     Revert {
         Write-Output "Reverting changes..."; $PublishSettings = $false
         Revert-Changes
